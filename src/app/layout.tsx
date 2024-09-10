@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Noto_Sans, Inter } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import Header from "./components/Header";
 const noto = Noto_Sans({
   subsets: ["latin"],
