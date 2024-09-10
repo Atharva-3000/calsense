@@ -1,6 +1,6 @@
 # Checkpoints
-
-- [] Landing/Homepage
+- [x] Init repo
+- [x] Landing/Homepage
 - [] Auth (clerk)
 - [] Dashboard
 - [] Event Form (types)

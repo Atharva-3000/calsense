@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.cool-underline{
+    position: relative;
+}
+
+.cool-underline::after{
+    content: '';
+    height: 10px;
+    background-color: #DC008344;
+    display: block;
+    position: absolute;
+    left:-2px;
+    width: 0;
+    bottom: 10px;
+    z-index: -1;
+    transform: skew(-12deg);
+    transition: all 1s ease-in-out;
+}
+
+.cool-underline.show-underline::after{
+    width: calc(100% + 16px);
+}
