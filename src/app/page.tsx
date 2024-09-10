@@ -1,11 +1,10 @@
-import Header from "./components/Header";
 import Hero from "./components/Hero";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <section className="text-center mt-32">
+      <section className="text-center mt-12 lg:mt-28">
         <p className="text-gray-600">Trusted by these companies: </p>
         <div className="flex gap-8 *:h-10 mt-6 justify-center grayscale">
           <img src="https://redis.io/wp-content/uploads/2024/09/adobe-logo.svg?&auto=webp&quality=85,75&width=80" alt="" />

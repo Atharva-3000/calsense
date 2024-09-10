@@ -20,7 +20,7 @@ export default function Hero() {
             </h1>
             <p className="text-gray-600 font-medium">
                 Effortlessly Schedule, Connect Seamlessly – Your Time, Your Rules.
-                <br />Plus we are open source! <a href="https://github.com/Atharva-3000/calsense" className="underline text-blue-500 font-bold">Here's </a> the code.🚀
+                <br />Plus we are open source! <a href="https://github.com/Atharva-3000/calsense" className="underline text-blue-500 font-bold">Here&apos;s </a> the code.🚀
             </p>
             <div className="mt-4 flex gap-4 justify-center">
                 <Link href={"/"} className="bg-black text-white py-2 px-4 rounded-full">
