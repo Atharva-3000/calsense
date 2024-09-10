@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Checkpoints
+
+- [] Landing/Homepage
+- [] Auth (clerk)
+- [] Dashboard
+- [] Event Form (types)
+- [] Saving and Deleting Events (db)
+- [] Profile Form
+- [] Booking Page
+- [] Calendar and Time UI
+- [] Booking Form
+- [] Sending Event to user calendar
+- [] Availability check in user calendar
+- [] Preloaders and booked event listing
+- [] bug fixes / deployment
 
 ## Getting Started
 
