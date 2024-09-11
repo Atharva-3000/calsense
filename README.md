@@ -1,7 +1,7 @@
 # Checkpoints
 - [x] Init repo
 - [x] Landing/Homepage
-- [] Auth (clerk)
+- [x] Auth (NYLAS this time round*)
 - [] Dashboard
 - [] Event Form (types)
 - [] Saving and Deleting Events (db)

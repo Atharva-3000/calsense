@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 
 export default function Hero() {
     const [showLine, setShowLine] = useState(false);
+    
     useEffect(() => {
         setShowLine(true);
-    })
+    }, []);
+
     return (
         <section className="text-center mt-24">
             <h1 className="text-5xl font-bold mb-6 leading-tight">
