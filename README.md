@@ -2,8 +2,8 @@
 - [x] Init repo
 - [x] Landing/Homepage
 - [x] Auth (NYLAS this time round*)
-- [] Dashboard
-- [] Event Form (types)
+- [x] Dashboard Layout Done
+- [] Event Form (types and getting a database `mongo`)
 - [] Saving and Deleting Events (db)
 - [] Profile Form
 - [] Booking Page
