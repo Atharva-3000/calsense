@@ -10,7 +10,7 @@ export default function RightNav({ email }: { email: string }) {
                     Dashboard
                 </Link>
 
-                {/* this was s hit ton difficult, seems like anchor doesn't cache like Link */}
+                {/* this was shit ton difficult, seems like anchor doesn't cache like Link */}
                 <a href={'/api/logout'}>Logout</a>
             </nav>
         );

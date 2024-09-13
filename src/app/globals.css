@@ -25,11 +25,11 @@
 }
 
 
-form input, form select, form textarea{
+form input[type="text"],form input[type="number"], form select, form textarea{
     @apply border rounded-md ;
 }
 
-form input, form textarea{
+form input[type="text"],form input[type="number"], form textarea{
     @apply w-full block p-2;
 }
 
