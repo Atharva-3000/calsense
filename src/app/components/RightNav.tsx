@@ -6,7 +6,7 @@ export default function RightNav({ email }: { email: string }) {
     if (email) {
         return (
             <nav className="flex gap-4 items-center">
-                <Link href={'/dashboard'} className="bg-blue-600 text-white py-2 rounded-full px-4">
+                <Link href={'/dashboard'} className="btn-blue">
                     Dashboard
                 </Link>
 
