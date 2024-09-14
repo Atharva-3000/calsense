@@ -5,6 +5,8 @@ import { BookingTimes, WeekdayName } from "@/libs/types";
 import { weekdaysNames } from "@/libs/shared";
 import TimeSelect from "./TimeSelect";
 import clsx from "clsx";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function EventTypeForm() {
 
@@ -12,8 +14,17 @@ export default function EventTypeForm() {
     const [description, setDescription] = useState("");
     const [length, setLength] = useState(30);
     const [bookingTimes, setBookingTimes] = useState<BookingTimes>({});
-    function handleSubmit() {
+    const router = useRouter();
 
+    // @ts-expect-error : this is a comment to ignore the error
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const response = await axios.post('/api/event-types', {
+            title, description, length, bookingTimes
+        });
+        if(response.data){
+            router.push('/dashboard/event-types');
+        }
     }
 
     function handleBookingTimeChange(
@@ -69,8 +80,6 @@ export default function EventTypeForm() {
                     </span>
                     <div className="grid gap-2">
                         {weekdaysNames.map((day) => {
-                            const from = bookingTimes?.[day]?.from;
-                            const to = bookingTimes?.[day]?.to;
                             const active = bookingTimes?.[day]?.active;
                             return (
                                 <div

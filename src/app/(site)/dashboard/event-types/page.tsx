@@ -20,7 +20,6 @@ export default async function EventTypesPage() {
         <div>
             <DashboardNav />
             Hello from Event Types Page
-            {JSON.stringify(eventTypes)}
             <br />
             <Link className="btn-gray" href={'/dashboard/event-types/new'}>
             <Plus  size={18}/>
