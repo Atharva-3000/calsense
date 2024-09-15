@@ -1,32 +1,37 @@
 'use client';
-
-import { useState } from "react";
-import { BookingTimes, WeekdayName } from "@/libs/types";
+// import EventTypeDelete from "@/app/components/EventTypeDelete";
+import TimeSelect from "@/app/components/TimeSelect";
 import { weekdaysNames } from "@/libs/shared";
-import TimeSelect from "./TimeSelect";
-import clsx from "clsx";
+import { BookingTimes, WeekdayName } from "@/libs/types";
+import { IEventType } from "@/models/EventTypes";
 import axios from "axios";
+import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import EventTypeDelete from "./EventTypeDelete";
 
-export default function EventTypeForm() {
-
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [length, setLength] = useState(30);
-    const [bookingTimes, setBookingTimes] = useState<BookingTimes>({});
+export default function EventTypeForm({
+    doc,
+}: {
+    doc?: IEventType;
+    username?: string;
+}) {
+    const [title, setTitle] = useState(doc?.title || '');
+    const [description, setDescription] = useState(doc?.description || '');
+    const [length, setLength] = useState(doc?.length || 30);
+    const [bookingTimes, setBookingTimes] = useState<BookingTimes>(doc?.bookingTimes || {});
     const router = useRouter();
-
-    // @ts-expect-error : this is a comment to ignore the error
-    async function handleSubmit(e) {
-        e.preventDefault();
-        const response = await axios.post('/api/event-types', {
-            title, description, length, bookingTimes
-        });
-        if(response.data){
+    async function handleSubmit(ev: FormEvent) {
+        ev.preventDefault();
+        const id = doc?._id;
+        const request = id ? axios.put : axios.post;
+        const data = { title, description, length, bookingTimes };
+        const response = await request('/api/event-types', { ...data, id });
+        if (response.data) {
             router.push('/dashboard/event-types');
+            router.refresh();
         }
     }
-
     function handleBookingTimeChange(
         day: WeekdayName,
         val: string | boolean,
@@ -37,100 +42,96 @@ export default function EventTypeForm() {
             if (!newBookingTimes[day]) {
                 newBookingTimes[day] = { from: '00:00', to: '00:00', active: false };
             }
-            // @ts-expect-error : it just works
+
+            // @ts-ignore
             newBookingTimes[day][prop] = val;
-            return newBookingTimes
+
+            return newBookingTimes;
         });
     }
-
-
     return (
-        <form className=" p-2 bg-gray-200 rounded-lg" onSubmit={handleSubmit}>
-            create new event type:
+        <form className="mt-4 p-2 bg-gray-200 rounded-lg" onSubmit={handleSubmit}>
+            {doc && (
+                <p className="mb-2 text-sm my-2">URL: http://localhost:3000/username/{doc?.uri}</p>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label>
-                        <span>
-                            Title
-                        </span>
-                        <input type="text" placeholder="title" value={title} onChange={e => setTitle(e.target.value)} />
+                        <span>title</span>
+                        <input
+                            type="text"
+                            placeholder="title"
+                            value={title}
+                            onChange={ev => setTitle(ev.target.value)} />
                     </label>
                     <label>
-                        <span>
-                            Description
-                        </span>
+                        <span>description</span>
                         <textarea
+                            placeholder="description"
                             value={description}
-                            onChange={e => setDescription(e.target.value)}
-                            placeholder="description"></textarea>
+                            onChange={ev => setDescription(ev.target.value)}
+                        />
                     </label>
                     <label>
-                        <span>
-                            Event Length (in mins)
-                        </span>
-                        <input type="number"
+                        <span>event length (minutes)</span>
+                        <input
+                            type="number"
+                            placeholder="30"
                             value={length}
-                            onChange={e => setLength(parseInt(e.target.value))}
-                            placeholder="30" />
+                            onChange={ev => setLength(parseInt(ev.target.value))}
+                        />
                     </label>
                 </div>
                 <div>
-                    <span className="label">
-                        Availability:
-                    </span>
+                    <span className="label">availability</span>
                     <div className="grid gap-2">
-                        {weekdaysNames.map((day) => {
+                        {weekdaysNames.map(day => {
                             const active = bookingTimes?.[day]?.active;
                             return (
                                 <div
                                     key={day}
-                                    className=
-                                    "grid grid-cols-2 gap-2 items-center"
-                                >
+                                    className="grid grid-cols-2 gap-2 items-center">
                                     <label className="flex gap-1 !mb-0 !p-0">
-                                        <input type="checkbox"
+                                        <input
+                                            type="checkbox"
                                             value={1}
-                                            checked={bookingTimes[day]?.active}
-                                            onChange={e => {
-                                                handleBookingTimeChange(day, e.target.checked, 'active'
-                                                )
-                                            }
-                                            }
+                                            checked={bookingTimes?.[day]?.active}
+                                            onChange={ev => handleBookingTimeChange(day, ev.target.checked, 'active')}
                                         />
                                         {day}
                                     </label>
-                                    <div className={clsx(
-                                        "inline-flex gap-2 items-center ml-2",
-                                        active ? '' : 'opacity-40'
-                                    )}>
+                                    <div className={
+                                        clsx(
+                                            "inline-flex gap-2 items-center ml-2",
+                                            active ? '' : 'opacity-40'
+                                        )
+                                    }>
                                         <TimeSelect
                                             value={bookingTimes?.[day]?.from || '00:00'}
-                                            onChange={
-                                                val =>
-                                                    handleBookingTimeChange(day, val, 'from')
-                                            }
+                                            onChange={val => handleBookingTimeChange(day, val, 'from')}
                                             step={30} />
-                                        <span>
-                                            -
-                                        </span>
+                                        <span>-</span>
                                         <TimeSelect
                                             value={bookingTimes?.[day]?.to || '00:00'}
-                                            onChange={
-                                                val =>
-                                                    handleBookingTimeChange(day, val, 'to')}
+                                            onChange={val => handleBookingTimeChange(day, val, 'to')}
                                             step={30} />
                                     </div>
                                 </div>
-                            )
+                            );
                         })}
                     </div>
                 </div>
             </div>
-            <div className="flex justify-center my-2">
-                <button type="submit" onClick={handleSubmit} className="btn-blue !px-8">
+            <div className="flex gap-4 justify-center">
+                {doc && (
+                    <EventTypeDelete id={doc?._id as string} />
+                )}
+                <button type="submit" className="btn-blue !px-8">
                     Save
                 </button>
+
             </div>
         </form>
-    )
+    );
 }

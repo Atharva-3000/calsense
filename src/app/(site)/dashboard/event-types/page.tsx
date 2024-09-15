@@ -19,11 +19,21 @@ export default async function EventTypesPage() {
     return (
         <div>
             <DashboardNav />
-            Hello from Event Types Page
-            <br />
+            <div className="border border-b-0  rounded-xl overflow-hidden mb-4 mt-4">
+                {eventTypes.map(eventType => (
+                    <div
+                        className="block p-2 border-b">
+                        <Link href={'/dashboard/event-types/edit/' + eventType.id}>
+                            {eventType.title}
+                        </Link>
+                        <span className="text-gray-400 ml-4 text-sm">
+                            http://localhost:3000/username/{eventType.uri}</span>
+                    </div>
+                ))}
+            </div>
             <Link className="btn-gray" href={'/dashboard/event-types/new'}>
-            <Plus  size={18}/>
-            New Event Type
+                <Plus size={18} />
+                New Event Type
             </Link>
         </div>
     )

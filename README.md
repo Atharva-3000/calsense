@@ -4,7 +4,7 @@
 - [x] Auth (NYLAS this time round*)
 - [x] Dashboard Layout Done
 - [x] Event Form (UI) (types and getting a database `mongo`)
-- [] Saving and Deleting Events (db)
+- [x] Saving and Deleting Events (db)
 - [] Profile Form
 - [] Booking Page
 - [] Calendar and Time UI
