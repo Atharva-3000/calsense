@@ -1,5 +1,5 @@
 'use client';
-// import EventTypeDelete from "@/app/components/EventTypeDelete";
+import EventTypeDelete from "@/app/components/EventTypeDelete";
 import TimeSelect from "@/app/components/TimeSelect";
 import { weekdaysNames } from "@/libs/shared";
 import { BookingTimes, WeekdayName } from "@/libs/types";
@@ -8,10 +8,10 @@ import axios from "axios";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import EventTypeDelete from "./EventTypeDelete";
 
 export default function EventTypeForm({
     doc,
+    username = ''
 }: {
     doc?: IEventType;
     username?: string;
@@ -52,9 +52,8 @@ export default function EventTypeForm({
     return (
         <form className="mt-4 p-2 bg-gray-200 rounded-lg" onSubmit={handleSubmit}>
             {doc && (
-                <p className="mb-2 text-sm my-2">URL: http://localhost:3000/username/{doc?.uri}</p>
+                <p className="my-2 text-sm text-gray-500">{process.env.NEXT_PUBLIC_URL}/{username}/{doc.uri}</p>
             )}
-
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label>
@@ -125,12 +124,11 @@ export default function EventTypeForm({
             </div>
             <div className="flex gap-4 justify-center">
                 {doc && (
-                    <EventTypeDelete id={doc?._id as string} />
+                    <EventTypeDelete id={doc._id as string} />
                 )}
                 <button type="submit" className="btn-blue !px-8">
                     Save
                 </button>
-
             </div>
         </form>
     );

@@ -1,40 +1,37 @@
-'use server';
-import DashboardNav from "@/app/components/DashboardNav";
-import { session } from "@/libs/session";
-import { EventTypeModel } from "@/models/EventTypes";
-import { Plus } from "lucide-react";
+'use server'
+import {session} from "@/libs/session";
+import {EventTypeModel} from "@/models/EventTypes";
+import {ProfileModel} from "@/models/Profiles";
+import {Plus} from "lucide-react";
 import mongoose from "mongoose";
 import Link from "next/link";
 
-
-
 export default async function EventTypesPage() {
-    const mongoUri = process.env.MONGODB_URI;
-    if (!mongoUri) {
-        throw new Error("MONGODB_URI is not defined");
-    }
-    await mongoose.connect(mongoUri);
-    const email = await session().get('email');
-    const eventTypes = await EventTypeModel.find({ email });
-    return (
-        <div>
-            <DashboardNav />
-            <div className="border border-b-0  rounded-xl overflow-hidden mb-4 mt-4">
-                {eventTypes.map(eventType => (
-                    <div
-                        className="block p-2 border-b">
-                        <Link href={'/dashboard/event-types/edit/' + eventType.id}>
-                            {eventType.title}
-                        </Link>
-                        <span className="text-gray-400 ml-4 text-sm">
-                            http://localhost:3000/username/{eventType.uri}</span>
-                    </div>
-                ))}
-            </div>
-            <Link className="btn-gray" href={'/dashboard/event-types/new'}>
-                <Plus size={18} />
-                New Event Type
+  await mongoose.connect(process.env.MONGODB_URI as string);
+  const email = await session().get('email');
+  const eventTypes = await EventTypeModel.find({email});
+  const profile = await ProfileModel.findOne({email});
+  return (
+    <div>
+      <div className="mt-4 border border-b-0 rounded-xl overflow-hidden mb-4">
+        {eventTypes.map(et => (
+          <div
+            key={et.id}
+            className="block p-2 border-b">
+            <Link href={'/dashboard/event-types/edit/'+et.id}>
+              {et.title}
             </Link>
-        </div>
-    )
+            <span className="text-gray-400 ml-4 text-sm">
+              {process.env.NEXT_PUBLIC_URL}/{profile.username}/{et.uri}
+            </span>
+          </div>
+        ))}
+      </div>
+      <Link className="btn-gray"
+            href="/dashboard/event-types/new">
+        <Plus size={16} />
+        New event type
+      </Link>
+    </div>
+  );
 }

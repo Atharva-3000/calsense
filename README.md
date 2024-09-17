@@ -5,7 +5,7 @@
 - [x] Dashboard Layout Done
 - [x] Event Form (UI) (types and getting a database `mongo`)
 - [x] Saving and Deleting Events (db)
-- [] Profile Form
+- [x] Profile Form
 - [] Booking Page
 - [] Calendar and Time UI
 - [] Booking Form
