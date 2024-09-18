@@ -6,7 +6,7 @@
 - [x] Event Form (UI) (types and getting a database `mongo`)
 - [x] Saving and Deleting Events (db)
 - [x] Profile Form
-- [] Booking Page
+- [x] Booking Page
 - [] Calendar and Time UI
 - [] Booking Form
 - [] Sending Event to user calendar
