@@ -1,7 +1,7 @@
 "use client";
 import { weekdaysShortNames } from "@/libs/shared"
 import { BookingTimes } from "@/libs/types"
-import { addDays, format, getDay, isLastDayOfMonth } from "date-fns";
+import { addDays, format, getDay, isLastDayOfMonth, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react";
 
@@ -9,15 +9,24 @@ export default function TimePicker(
     { bookingTimes, }: { bookingTimes: BookingTimes }
 ) {
     const currentDate = new Date();
-    const [activeMonthIndex, setActiveMonthIndex] = useState(currentDate.getMonth() - 1);
-    const [activeYear, setActiveYear] = useState(currentDate.getFullYear());
+    function prevMonth(){
+        setActiveMonthDate(prev => {
+            const newActiveMonth = subMonths(prev, 1);
+            setActiveMonthIndex(newActiveMonth.getMonth());
+            setActiveYear(newActiveMonth.getFullYear());
+            return newActiveMonth;
+        })
+    }
+    const [activeMonthDate, setActiveMonthDate] = useState(currentDate);
+    const [activeMonthIndex, setActiveMonthIndex] = useState(activeMonthDate.getMonth() - 1);
+    const [activeYear, setActiveYear] = useState(activeMonthDate.getFullYear());
     const firstDayOfCurrentMonth = new Date(activeYear, activeMonthIndex, 1);
     const firstDayOfCurrentMonthWeekdayIndex = getDay(firstDayOfCurrentMonth);
     const emptyDaysCount = firstDayOfCurrentMonthWeekdayIndex === 0 ? 6 : firstDayOfCurrentMonthWeekdayIndex - 1;
     const emptyDaysArr = (new Array(emptyDaysCount)).fill('', 0, emptyDaysCount);
     const daysNumbers = [firstDayOfCurrentMonth];
     do {
-        const lastAddedDay = daysNumbers[daysNumbers.length - 1];
+        const lastAddedDay = daysNumbers[daysNumbers.length];
         daysNumbers.push(addDays(lastAddedDay, 1));
     }
     while (!isLastDayOfMonth(daysNumbers[daysNumbers.length - 1]));
@@ -28,8 +37,12 @@ export default function TimePicker(
                 <div className="flex items-center">
                     <span className="grow">
                         {format(new Date(activeYear, activeMonthIndex), "MMMM")} {activeYear} </span>
-                    <button><ChevronLeft /></button>
-                    <button><ChevronRight /></button>
+                    <button >
+                        <ChevronLeft onClick={prevMonth} />
+                    </button>
+                    <button>
+                        <ChevronRight />
+                    </button>
                     {emptyDaysCount}
                     {JSON.stringify(firstDayOfCurrentMonthWeekdayIndex)}
                 </div>
