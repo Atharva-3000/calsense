@@ -7,7 +7,7 @@
 - [x] Saving and Deleting Events (db)
 - [x] Profile Form
 - [x] Booking Page
-- [] Calendar and Time UI
+- [X] Calendar and Time UI
 - [] Booking Form
 - [] Sending Event to user calendar
 - [] Availability check in user calendar
