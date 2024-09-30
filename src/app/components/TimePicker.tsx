@@ -1,13 +1,20 @@
+
 "use client";
 import { weekdaysShortNames } from "@/libs/shared";
 import { BookingTimes, WeekdayName } from "@/libs/types";
 import clsx from "clsx";
 import { addDays, addMinutes, addMonths, format, getDay, isBefore, isEqual, isFuture, isLastDayOfMonth, isToday, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function TimePicker(
-    { bookingTimes, length }: { bookingTimes: BookingTimes; length: number }
+    { bookingTimes, length, meetingUri, username }: {
+        bookingTimes: BookingTimes;
+        length: number;
+        meetingUri: string;
+        username: string;
+    }
 ) {
     const currentDate = new Date();
     const [activeMonthDate, setActiveMonthDate] = useState(currentDate);
@@ -134,9 +141,11 @@ export default function TimePicker(
                     <div className="grid gap-2 mt-2 max-h-52 overflow-auto pr-2">
                         {bookingHours.map((bookingTime, index) => (
                             <div key={`booking-${index}`}>
-                                <button className="w-full block border-2 rounded-lg border-blue-600 text-blue-600 font-semibold">
+                                <Link
+                                    href={`/${username}/${meetingUri}/${bookingTime.toISOString()}`}
+                                    className="w-full block border-2 rounded-lg border-blue-600 text-blue-600 font-semibold">
                                     {format(bookingTime, 'HH:mm')}
-                                </button>
+                                </Link>
                             </div>
                         ))}
                         <div className="mb-8">&nbsp;</div>

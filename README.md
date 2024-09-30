@@ -8,7 +8,7 @@
 - [x] Profile Form
 - [x] Booking Page
 - [X] Calendar and Time UI
-- [] Booking Form
+- [x] Booking Form
 - [] Sending Event to user calendar
 - [] Availability check in user calendar
 - [] Preloaders and booked event listing
