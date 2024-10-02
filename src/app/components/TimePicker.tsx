@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { TimeSlot } from "nylas";
 import { useEffect, useState } from "react";
+import { GridLoader } from "react-spinners";
 
 export default function TimePicker(
     { bookingTimes, length, meetingUri, username }: {
@@ -168,7 +169,7 @@ export default function TimePicker(
                         const isSelected = selectedDay && isEqual(n, selectedDay);
 
                         return (
-                            <div key={`day-${index}`} className="text-center text-sm text-gray-400 font-bold">
+                            <div key={n.toISOString()} className="text-center text-sm text-gray-400 font-bold">
                                 <button
                                     disabled={!canBeBooked}
                                     onClick={() => handleDayClick(n)}
@@ -186,14 +187,19 @@ export default function TimePicker(
                     })}
                 </div>
             </div>
-            {selectedDay && busySlotsLoaded && (
+            {selectedDay && (
                 <div className="pt-8 pl-2 pr-8 overflow-auto w-48">
                     <p className="text-left text-sm">
                         {format(selectedDay, 'EEEE, MMMM d')}
                     </p>
                     <div className="grid gap-2 mt-2 max-h-52 overflow-auto pr-2">
-                        {bookingHours.map((bookingTime, index) => (
-                            <div key={`booking-${index}`}>
+                        {!busySlotsLoaded && (
+                            <div className="flex justify-center py-4">
+                                <GridLoader color="#3882f6" size={10} speedMultiplier={1.4}/>
+                            </div>
+                        )}
+                        {busySlotsLoaded && bookingHours.map((bookingTime, index) => (
+                            <div key={bookingTime.toISOString()}>
                                 <Link
                                     href={`/${username}/${meetingUri}/${bookingTime.toISOString()}`}
                                     className="w-full block border-2 rounded-lg border-blue-600 text-blue-600 font-semibold">

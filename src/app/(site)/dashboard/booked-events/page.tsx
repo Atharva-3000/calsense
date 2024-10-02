@@ -1,8 +1,56 @@
-export default function DashboardPage() {
+import { session } from "@/libs/session";
+import { BookingModel } from "@/models/Booking";
+import { EventTypeModel } from "@/models/EventTypes";
+import { format } from "date-fns";
+import { Calendar, CircleUser, NotepadText, User } from "lucide-react";
+import mongoose from "mongoose"
+import React from "react";
+
+export default async function DashboardPage() {
+    await mongoose.connect(process.env.MONGODB_URI as string);
+    const email = await session().get('email');
+    const eventTypeDocs = await EventTypeModel.find({
+        email
+    });
+    const bookedEvents = await BookingModel.find({
+        eventTypeId: eventTypeDocs.map(doc => doc._id),
+    }, {}, { sort: 'when' });
     return (
         <>
-            <div>
-                Booked Events here
+            <div className="mt-8 ">
+                
+                {bookedEvents.map(booking => {
+                    const eventTypeDoc = eventTypeDocs
+                        .find(etd => (etd._id as string).toString() === booking.eventTypeId)
+                    return (
+                        <div className="p-4 border-b bg-gray-100 py-2 rounded-lg mb-2">
+                            <h3 className="text-lg font-semibold text-gray-600">
+                                {eventTypeDoc?.title}
+                            </h3>
+                            <div className="flex gap-2 items-center my-1">
+                                <CircleUser size={12} />
+                                <span>
+                                    {booking.guestName}
+                                </span>
+                                <span className="text-gray-500">
+                                    {booking.guestEmail}
+                                </span>
+                            </div>
+                            <div className="flex gap-2 items-center my-1">
+                                <Calendar size={12} />
+                                <span>
+                                    {format(booking.when, 'EEEE, MMMM d, HH:mm')}
+                                </span>
+                            </div>
+                            <div className="flex gap-2 items-center my-1">
+                                <NotepadText size={12} />
+                                <span>
+                                   {booking.guestNotes}
+                                </span>
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
         </>
     )
