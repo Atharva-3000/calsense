@@ -2,11 +2,13 @@
 "use client";
 import { weekdaysShortNames } from "@/libs/shared";
 import { BookingTimes, WeekdayName } from "@/libs/types";
+import axios from "axios";
 import clsx from "clsx";
-import { addDays, addMinutes, addMonths, format, getDay, isBefore, isEqual, isFuture, isLastDayOfMonth, isToday, subMonths } from "date-fns";
+import { addDays, addMinutes, addMonths, endOfDay, format, getDay, isAfter, isBefore, isEqual, isFuture, isLastDayOfMonth, isToday, startOfDay, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { TimeSlot } from "nylas";
+import { useEffect, useState } from "react";
 
 export default function TimePicker(
     { bookingTimes, length, meetingUri, username }: {
@@ -21,6 +23,8 @@ export default function TimePicker(
     const [activeMonthIndex, setActiveMonthIndex] = useState(activeMonthDate.getMonth());
     const [activeYear, setActiveYear] = useState(activeMonthDate.getFullYear());
     const [selectedDay, setSelectedDay] = useState<null | Date>(null);
+    const [busySlots, setBusySlots] = useState<TimeSlot[]>([]);
+    const [busySlotsLoaded, setBusySlotsLoaded] = useState(false);
 
     function prevMonth() {
         setActiveMonthDate(prev => {
@@ -44,20 +48,67 @@ export default function TimePicker(
         setSelectedDay(day);
     }
 
+    useEffect(() => {
+        if (selectedDay) {
+            setBusySlots([]);
+            setBusySlotsLoaded(false);
+            const params = new URLSearchParams();
+            params.set("username", username);
+            params.set("from", startOfDay(selectedDay).toISOString());
+            params.set("to", endOfDay(selectedDay).toISOString());
+            axios.get(`/api/busy?` + params.toString()).then(response => {
+                setBusySlots(response.data);
+                setBusySlotsLoaded(true);
+            });
+        }
+    }, [selectedDay])
+
+
+
+
+    function withinBusySlots(time: Date) {
+        const bookingFrom = time;
+        const bookingTo = addMinutes(new Date(time), length);
+
+        for (let busySlot of busySlots) {
+            const busyFrom = new Date(parseInt(busySlot.startTime) * 1000);
+            const busyTo = new Date(parseInt(busySlot.endTime) * 1000);
+
+            if (isAfter(bookingTo, busyFrom) && isBefore(bookingTo, busyTo)) {
+                return true;
+            }
+            if (isAfter(bookingFrom, busyFrom) && isBefore(bookingFrom, busyTo)) {
+                return true;
+            }
+            if (isEqual(bookingFrom, busyFrom)) {
+                return true;
+            }
+            if (isEqual(bookingTo, busyTo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
     const firstDayOfCurrentMonth = new Date(activeYear, activeMonthIndex, 1);
     const firstDayOfCurrentMonthWeekdayIndex = getDay(firstDayOfCurrentMonth);
     const emptyDaysCount = firstDayOfCurrentMonthWeekdayIndex === 0 ? 6 : firstDayOfCurrentMonthWeekdayIndex - 1;
     const emptyDaysArr = new Array(emptyDaysCount).fill('');
-
     const daysNumbers = [firstDayOfCurrentMonth];
+
+
+
     while (!isLastDayOfMonth(daysNumbers[daysNumbers.length - 1])) {
         const lastAddedDay = daysNumbers[daysNumbers.length - 1];
         daysNumbers.push(addDays(lastAddedDay, 1));
     }
 
+
     let selectedDayConfig = null;
     const bookingHours = [];
-
     if (selectedDay) {
         const weekDayNameIndex = format(selectedDay, 'EEEE').toLowerCase() as WeekdayName;
         selectedDayConfig = bookingTimes?.[weekDayNameIndex];
@@ -74,7 +125,9 @@ export default function TimePicker(
 
             let a = selectedDayFrom;
             do {
-                bookingHours.push(a);
+                if (!withinBusySlots(a)) {
+                    bookingHours.push(a);
+                }
                 a = addMinutes(a, 30);
             } while (isBefore(addMinutes(a, length), selectedDateTo));
         }
@@ -133,7 +186,7 @@ export default function TimePicker(
                     })}
                 </div>
             </div>
-            {selectedDay && (
+            {selectedDay && busySlotsLoaded && (
                 <div className="pt-8 pl-2 pr-8 overflow-auto w-48">
                     <p className="text-left text-sm">
                         {format(selectedDay, 'EEEE, MMMM d')}

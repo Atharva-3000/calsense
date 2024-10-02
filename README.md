@@ -10,7 +10,7 @@
 - [X] Calendar and Time UI
 - [x] Booking Form
 - [x] Sending Event to user calendar
-- [] Availability check in user calendar
+- [x] Availability check in user calendar
 - [] Preloaders and booked event listing
 - [] bug fixes / deployment
 
